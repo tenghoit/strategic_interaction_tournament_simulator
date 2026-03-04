@@ -1,0 +1,83 @@
+import static org.junit.jupiter.api.Assertions.*;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+
+class PrisonerDilemmaTest {
+	
+	Robot alice;
+    Robot bob;
+    Robot charles;
+    PrisonerDilemma pd;
+    RoundRobin robin;
+    ArrayList<History> history;
+	
+	@BeforeEach
+	void setUp() throws Exception {
+		
+		alice = new Cooperator("Alice");
+        bob = new Defector("Bob");
+        charles = new Reciprocator("Charles");
+        pd = new PrisonerDilemma();
+        history = new ArrayList<>();
+        
+        pd.addMoveListener(new MovePrinter());
+        pd.addScoreListener(new ScorePrinter());
+        
+        
+	}
+	
+	@Test
+	void testPlayerActions() {
+		history = new ArrayList<History>();
+		history.add(new History("Bob", "Charles", "DEFECT", "COOPERATE", 0, 5));
+		
+		assertEquals("COOPERATE", alice.getAction("Bob", history));
+		assertEquals("DEFECT", bob.getAction("Charles", history));
+		assertEquals("DEFECT", charles.getAction("Bob", history));
+		
+		history.add(new History("Bob", "Charles", "COOPERATE", "COOPERATE", 0, 5));
+		assertEquals("COOPERATE", charles.getAction("Bob", history));
+	}
+	
+	@Test
+    void testGameOutcomes() {
+        int[] cc = pd.getOutcome("COOPERATE", "COOPERATE");
+        assertArrayEquals(new int[]{3, 3}, cc);
+
+        int[] cd = pd.getOutcome("COOPERATE", "DEFECT");
+        assertArrayEquals(new int[]{0, 5}, cd);
+    }
+	
+	@Test
+    void testMatch() {
+		history = new ArrayList<History>();
+        History match = pd.play(alice, bob, history);
+        
+        assertEquals(0, match.result1());
+        assertEquals(5, match.result2());
+    }
+	
+	@Test
+    void testRRBracket() {
+        Robot[] players = {alice, bob, charles};
+        robin = new RoundRobin(players, pd);
+        
+        robin.getBracket();
+        assertEquals(3, robin.bracket.size());
+    }
+	
+	@Test
+    void testTournamentRun() {
+        Robot[] players = {alice, bob};
+        robin = new RoundRobin(players, pd);
+        
+        Robot[] rankings = robin.run();
+        
+        assertEquals("Bob", rankings[0].getName());
+        assertEquals(5, rankings[0].getScore(robin.history));
+    }
+	
+}
