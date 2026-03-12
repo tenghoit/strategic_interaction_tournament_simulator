@@ -1,3 +1,4 @@
+package loggers;
 
 public class MovePrinter implements MoveListener {
 

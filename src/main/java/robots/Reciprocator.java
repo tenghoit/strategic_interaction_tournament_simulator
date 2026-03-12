@@ -1,4 +1,8 @@
+package robots;
+
 import java.util.ArrayList;
+
+import models.History;
 
 public class Reciprocator extends Robot {
 

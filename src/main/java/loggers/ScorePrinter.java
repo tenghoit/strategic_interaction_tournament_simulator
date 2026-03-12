@@ -1,3 +1,5 @@
+package loggers;
+import History;
 
 public class ScorePrinter implements ScoreListener {
 

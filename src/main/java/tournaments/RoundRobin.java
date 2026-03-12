@@ -1,3 +1,5 @@
+package tournaments;
+import robots.Robot;
 
 public class RoundRobin extends Tournament {
 

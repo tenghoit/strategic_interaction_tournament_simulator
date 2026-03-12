@@ -2,17 +2,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import games.Game;
+import models.History;
+import robots.Robot;
+
 public abstract class Tournament {
-	public Tournament(Robot[] players, Game game) {
+	public Tournament(Game game) {
 		super();
-		this.players = players;
 		this.game = game;
+		this.players = new ArrayList<Robot>();
 		this.history = new ArrayList<History>();
 		this.bracket = new ArrayList<Robot[]>();
 	}
 	
-	Robot[] players;
 	Game game;
+	ArrayList<Robot> players;
 	ArrayList<History> history;
 	ArrayList<Robot[]> bracket;
 	
@@ -34,7 +38,7 @@ public abstract class Tournament {
 	}
 	
 	public Robot[] getRankings() {
-	    Robot[] rankings = this.players.clone(); // Clone so we don't mess up the original order
+	    Robot[] rankings = (Robot[]) this.players.clone(); // Clone so we don't mess up the original order
 	    
 	    Arrays.sort(rankings, new Comparator<Robot>() {
 	        @Override
@@ -47,9 +51,21 @@ public abstract class Tournament {
 	    return rankings;
 	}
 	
+	public Boolean addPlayer(Robot player) {
+		if(!this.isOpen()) {
+			return false;
+		}
+		
+		this.players.add(player);
+		return true;
+	}
+	
 	public abstract boolean checkEnd();
 	
 	public abstract void getBracket();
 	
 	public abstract void updateBracket();
+	
+	public abstract Boolean isOpen();
+	
 }

@@ -3,6 +3,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import games.PrisonerDilemma;
+import loggers.MovePrinter;
+import loggers.ScorePrinter;
+import robots.Robot;
+import tournaments.RoundRobin;
+
 import java.util.ArrayList;
 
 class PrisonerDilemmaTest {

@@ -1,3 +1,4 @@
+package games;
 
 public class PrisonerDilemma extends Game {
 

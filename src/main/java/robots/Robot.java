@@ -1,4 +1,7 @@
+package robots;
 import java.util.ArrayList;
+
+import models.History;
 
 public abstract class Robot {
 	String name;

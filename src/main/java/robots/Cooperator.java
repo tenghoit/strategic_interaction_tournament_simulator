@@ -1,16 +1,18 @@
+package robots;
 import java.util.ArrayList;
 
-public class Defector extends Robot {
+import models.History;
 
-	public Defector(String name) {
+public class Cooperator extends Robot {
+
+	public Cooperator(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String getAction(String opponentName, ArrayList<History> history) {
 		// TODO Auto-generated method stub
-		return "DEFECT";
+		return "COOPERATE";
 	}
 
 }

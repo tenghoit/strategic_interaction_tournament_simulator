@@ -1,16 +1,22 @@
+package games;
 import java.util.ArrayList;
+
+import loggers.MoveListener;
+import loggers.ScoreListener;
+import models.History;
+import robots.Robot;
 
 public abstract class Game {
 	ArrayList<MoveListener> moveListeners;
 	ArrayList<ScoreListener> scoreListeners;
 	
 	public History play(Robot player1, Robot player2, ArrayList<History> history) {
-		String player1_action = player1.getAction(player2.getName(), history);
-		String player2_action = player2.getAction(player1.getName(), history);
+		String action1 = player1.getAction(player2.getName(), history);
+		String action2 = player2.getAction(player1.getName(), history);
 		
-		int[] outcomes = this.getOutcome(player1_action, player2_action);
+		int[] outcomes = this.getOutcome(action1, action2);
 		
-		History match = new History(player1.getName(), player2.getName(), player1_action, player2_action, outcomes[0], outcomes[1]);
+		History match = new History(player1.getName(), player2.getName(), action1, action2, outcomes[0], outcomes[1]);
 		
 		return match;
 	}
