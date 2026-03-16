@@ -63,5 +63,9 @@ public abstract class Game {
 		}
 	}
 	
+	public ArrayList<Listener> getListeners(String event){
+		return this.listeners.get(event);
+	}
+	
 	
 }

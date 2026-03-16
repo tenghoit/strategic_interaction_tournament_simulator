@@ -17,8 +17,8 @@ public class ScoreLogger implements Listener {
 		// TODO Auto-generated method stub
 	    try {
 	        FileWriter myWriter = new FileWriter(this.fileName, true);
-	        myWriter.write(history.player1() + " " + history.result1());
-	        myWriter.write(history.player2() + " " + history.result2());
+	        myWriter.write(history.player1() + " " + history.result1() + "\n");
+	        myWriter.write(history.player2() + " " + history.result2() + "\n");
 	        myWriter.close();  // must close manually
 	    } catch (IOException e) {
 	        e.printStackTrace();

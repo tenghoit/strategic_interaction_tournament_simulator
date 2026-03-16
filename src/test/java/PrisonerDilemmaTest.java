@@ -36,7 +36,6 @@ class PrisonerDilemmaTest {
         
         pd.addListener("moves", new MoveLogger("moves.txt"));
         pd.addListener("scores", new ScoreLogger("scores.txt"));
-        
 	}
 	
 	@Test
@@ -60,6 +59,16 @@ class PrisonerDilemmaTest {
         int[] cd = pd.getOutcome("COOPERATE", "DEFECT");
         assertArrayEquals(new int[]{0, 5}, cd);
     }
+	
+	@Test
+	void testLoggers() {
+        pd.addListener("moves", new MoveLogger("moves.txt"));
+        pd.addListener("scores", new ScoreLogger("scores.txt"));
+        assertEquals(1, pd.getListeners("scores").size());
+        
+        pd.removeListener("scores", null);
+        
+	}
 	
 	@Test
     void testMatch() {

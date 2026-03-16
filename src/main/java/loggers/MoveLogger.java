@@ -16,8 +16,8 @@ public class MoveLogger implements Listener {
 		// TODO Auto-generated method stub
 	    try {
 	        FileWriter myWriter = new FileWriter(this.fileName, true);
-	        myWriter.write(history.player1() + " " + history.action1());
-	        myWriter.write(history.player2() + " " + history.action2());
+	        myWriter.write(history.player1() + " " + history.action1() + "\n");
+	        myWriter.write(history.player2() + " " + history.action2() + "\n");
 	        myWriter.close();  // must close manually
 	    } catch (IOException e) {
 	        e.printStackTrace();
