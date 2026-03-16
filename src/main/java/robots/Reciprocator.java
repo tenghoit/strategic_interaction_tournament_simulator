@@ -17,6 +17,7 @@ public class Reciprocator extends Robot {
 		
 		History lastMatch = null;
 		
+		// start from end
 		for (int i = history.size() - 1; i >= 0; i--) {
             History curr = history.get(i);
             
