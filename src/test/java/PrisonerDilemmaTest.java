@@ -10,6 +10,7 @@ import loggers.ScoreLogger;
 import models.History;
 import robots.Cooperator;
 import robots.Defector;
+import robots.HumanBot;
 import robots.Reciprocator;
 import robots.Robot;
 import tournaments.RoundRobin;
@@ -21,9 +22,11 @@ class PrisonerDilemmaTest {
 	Robot alice;
     Robot bob;
     Robot charles;
+    Robot darren;
     PrisonerDilemma pd;
     RoundRobin robin;
     ArrayList<History> history;
+    ArrayList<History> emptyHistory;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -31,11 +34,13 @@ class PrisonerDilemmaTest {
 		alice = new Cooperator("Alice");
         bob = new Defector("Bob");
         charles = new Reciprocator("Charles");
+        darren = new HumanBot("Darren");
         pd = new PrisonerDilemma();
-        history = new ArrayList<>();
         
-        pd.addListener("moves", new MoveLogger("moves.txt"));
-        pd.addListener("scores", new ScoreLogger("scores.txt"));
+        history = new ArrayList<>();
+        emptyHistory = new ArrayList<>();
+        
+        
 	}
 	
 	@Test
@@ -47,8 +52,10 @@ class PrisonerDilemmaTest {
 		assertEquals("DEFECT", bob.getAction("Charles", history));
 		assertEquals("DEFECT", charles.getAction("Bob", history));
 		
-		history.add(new History("Bob", "Charles", "COOPERATE", "COOPERATE", 0, 5));
+		history.add(new History("Charles", "Bob", "COOPERATE", "COOPERATE", 0, 5));
 		assertEquals("COOPERATE", charles.getAction("Bob", history));
+		
+		assertEquals("DEFECT", darren.getAction("Bob", emptyHistory));
 	}
 	
 	@Test
@@ -63,10 +70,13 @@ class PrisonerDilemmaTest {
 	@Test
 	void testLoggers() {
         pd.addListener("moves", new MoveLogger("moves.txt"));
-        pd.addListener("scores", new ScoreLogger("scores.txt"));
+        
+        ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
+        pd.addListener("scores", scoreLogger);
         assertEquals(1, pd.getListeners("scores").size());
         
-        pd.removeListener("scores", null);
+        pd.removeListener("scores", scoreLogger);
+        assertEquals(0, pd.getListeners("scores").size());
         
 	}
 	
