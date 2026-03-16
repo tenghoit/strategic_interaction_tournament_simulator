@@ -33,12 +33,16 @@ public abstract class Tournament {
 			Robot player1 = currentMatchup[0];
 			Robot player2 = currentMatchup[1];
 			
-			History match  = this.game.play(player1, player2, this.history);
-			this.history.add(match);
+			History match  = this.game.play(player1, player2, this.getHistory());
+			this.getHistory().add(match);
 			this.updateBracket();
 		}
 		
 		return this.getRankings();
+	}
+	
+	public ArrayList<Robot[]> getCurrentBracket(){
+		return this.bracket;
 	}
 	
 	public Robot[] getRankings() {
@@ -46,7 +50,7 @@ public abstract class Tournament {
 	    HashMap<String, Integer> scores = new HashMap<>();
 	    
 	    for(Robot bot : this.players) {
-	    	scores.put(bot.getName(), bot.getScore(this.history)); // filling scores
+	    	scores.put(bot.getName(), bot.getScore(this.getHistory())); // filling scores
 	    }
 	    
 	    Arrays.sort(rankings, new Comparator<Robot>() {
@@ -76,5 +80,9 @@ public abstract class Tournament {
 	public abstract void updateBracket();
 	
 	public abstract Boolean isOpen();
+
+	public ArrayList<History> getHistory() {
+		return history;
+	}
 	
 }

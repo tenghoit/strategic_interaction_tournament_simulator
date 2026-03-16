@@ -5,8 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.PrisonerDilemma;
-import loggers.MovePrinter;
-import loggers.ScorePrinter;
+import loggers.MoveLogger;
+import loggers.ScoreLogger;
+import models.History;
+import robots.Cooperator;
+import robots.Defector;
+import robots.Reciprocator;
 import robots.Robot;
 import tournaments.RoundRobin;
 
@@ -30,9 +34,8 @@ class PrisonerDilemmaTest {
         pd = new PrisonerDilemma();
         history = new ArrayList<>();
         
-        pd.addMoveListener(new MovePrinter());
-        pd.addScoreListener(new ScorePrinter());
-        
+        pd.addListener("moves", new MoveLogger("moves.txt"));
+        pd.addListener("scores", new ScoreLogger("scores.txt"));
         
 	}
 	
@@ -70,21 +73,27 @@ class PrisonerDilemmaTest {
 	@Test
     void testRRBracket() {
         Robot[] players = {alice, bob, charles};
-        robin = new RoundRobin(players, pd);
+        robin = new RoundRobin("PDRR", pd);
+        for(Robot bot : players) {
+        	robin.addPlayer(bot);
+        }
         
-        robin.getBracket();
-        assertEquals(3, robin.bracket.size());
+        ArrayList<Robot[]> curr = robin.getCurrentBracket();
+        assertEquals(3, curr.size());
     }
 	
 	@Test
     void testTournamentRun() {
         Robot[] players = {alice, bob};
-        robin = new RoundRobin(players, pd);
+        robin = new RoundRobin("PDRR", pd);
+        for(Robot bot : players) {
+        	robin.addPlayer(bot);
+        }
         
         Robot[] rankings = robin.run();
         
         assertEquals("Bob", rankings[0].getName());
-        assertEquals(5, rankings[0].getScore(robin.history));
+        assertEquals(5, rankings[0].getScore(robin.getHistory()));
     }
 	
 }
