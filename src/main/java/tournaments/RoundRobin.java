@@ -38,7 +38,7 @@ public class RoundRobin extends Tournament {
 	@Override
 	public Boolean isOpen() {
 		// TODO Auto-generated method stub
-		return this.players.size() < 4;
+		return (this.players.size() < 4);
 	}
 
 }

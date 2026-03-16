@@ -34,6 +34,7 @@ public class HumanBot extends Robot {
 	    }
 	    System.out.println("Enter action: ");
 	    String action = reader.nextLine();
+	    reader.close();
 		
 		return action;
 		

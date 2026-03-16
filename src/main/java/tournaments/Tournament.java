@@ -46,7 +46,7 @@ public abstract class Tournament {
 	}
 	
 	public Robot[] getRankings() {
-	    Robot[] rankings = (Robot[]) this.players.clone();
+	    Robot[] rankings = this.players.toArray(new Robot[this.players.size()]);
 	    HashMap<String, Integer> scores = new HashMap<>();
 	    
 	    for(Robot bot : this.players) {

@@ -77,7 +77,7 @@ class PrisonerDilemmaTest {
         for(Robot bot : players) {
         	robin.addPlayer(bot);
         }
-        
+        robin.getBracket();
         ArrayList<Robot[]> curr = robin.getCurrentBracket();
         assertEquals(3, curr.size());
     }
