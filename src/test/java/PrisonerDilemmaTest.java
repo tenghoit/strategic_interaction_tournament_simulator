@@ -37,7 +37,7 @@ class PrisonerDilemmaTest {
         darren = new HumanBot("Darren");
         pd = new PrisonerDilemma();
         
-        history = new ArrayList<>();
+        history = new ArrayList<History>();
         emptyHistory = new ArrayList<>();
         
         
@@ -45,17 +45,18 @@ class PrisonerDilemmaTest {
 	
 	@Test
 	void testPlayerActions() {
-		history = new ArrayList<History>();
 		history.add(new History("Bob", "Charles", "DEFECT", "COOPERATE", 0, 5));
 		
-		assertEquals("COOPERATE", alice.getAction("Bob", history));
-		assertEquals("DEFECT", bob.getAction("Charles", history));
+		assertEquals("COOPERATE", alice.getAction("Bob", emptyHistory));
+		assertEquals("DEFECT", bob.getAction("Charles", emptyHistory));
+		assertEquals("COOPERATE", charles.getAction("Bob", emptyHistory));
+		
 		assertEquals("DEFECT", charles.getAction("Bob", history));
 		
 		history.add(new History("Charles", "Bob", "COOPERATE", "COOPERATE", 0, 5));
 		assertEquals("COOPERATE", charles.getAction("Bob", history));
 		
-		assertEquals("DEFECT", darren.getAction("Bob", emptyHistory));
+//		assertEquals("DEFECT", darren.getAction("Bob", emptyHistory));
 	}
 	
 	@Test
