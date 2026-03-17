@@ -70,14 +70,23 @@ class PrisonerDilemmaTest {
 	
 	@Test
 	void testLoggers() {
-        pd.addListener("moves", new MoveLogger("moves.txt"));
+		assertEquals(true, pd.addListener("moves", new MoveLogger("moves.txt")));
+		assertEquals(true, pd.addListener("moves", new MoveLogger("moves2.txt")));
         
+		
+		assertEquals(false, pd.notify("scores", new History("Charles", "Bob", "COOPERATE", "COOPERATE", 0, 5)));
+		
+		
         ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
-        pd.addListener("scores", scoreLogger);
-        assertEquals(1, pd.getListeners("scores").size());
+        ScoreLogger scoreLogger2 = new ScoreLogger("scores2.txt");
         
-        pd.removeListener("scores", scoreLogger);
-        assertEquals(0, pd.getListeners("scores").size());
+        assertEquals(false, pd.removeListener("scores", scoreLogger));
+        pd.addListener("scores", scoreLogger);
+        assertEquals(false, pd.removeListener("scores", scoreLogger2));
+        assertEquals(true, pd.removeListener("scores", scoreLogger));
+        
+        assertEquals(true, pd.notify("scores", new History("Charles", "Bob", "COOPERATE", "COOPERATE", 0, 5)));
+       
         
 	}
 	

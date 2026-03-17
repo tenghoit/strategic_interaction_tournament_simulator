@@ -32,35 +32,38 @@ public abstract class Game {
 
 	public abstract int[] getOutcome(String action1, String action2);
 	
-	public void addListener(String event, Listener listener) {
+	public Boolean addListener(String event, Listener listener) {
 		if(!this.listeners.containsKey(event)) {
 			this.listeners.put(event, new ArrayList<Listener>());
 		}
 		this.listeners.get(event).add(listener);
+		return true;
 	}
 	
-	public void removeListener(String event, Listener listener) {
+	public Boolean removeListener(String event, Listener listener) {
 		if(!this.listeners.containsKey(event)) {
-			return;
+			return false;
 		}
 		
 		ArrayList<Listener> list = this.listeners.get(event);
 		
 		if(!list.contains(listener)) {
-			return;
+			return false;
 		}
 		
 		list.remove(listener);
+		return true;
 	}
 	
-	public void notify(String event, History history) {
+	public Boolean notify(String event, History history) {
 		if(!this.listeners.containsKey(event)) {
-			return;
+			return false;
 		}
 		
 		for(Listener listener : this.listeners.get(event)) {
 			listener.update(history);
 		}
+		return true;
 	}
 	
 	public ArrayList<Listener> getListeners(String event){
