@@ -71,7 +71,7 @@ class PrisonerDilemmaTest {
         assertArrayEquals(new int[]{5, 0}, dc);
 
         int[] dd = pd.getOutcome("DEFECT", "DEFECT");
-        assertArrayEquals(new int[]{3, 3}, dd);
+        assertArrayEquals(new int[]{1, 1}, dd);
 
         int[] nn = pd.getOutcome("a", "a");
         assertArrayEquals(new int[]{0, 0}, nn);
