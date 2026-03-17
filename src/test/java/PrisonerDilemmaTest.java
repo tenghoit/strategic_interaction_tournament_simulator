@@ -66,6 +66,15 @@ class PrisonerDilemmaTest {
 
         int[] cd = pd.getOutcome("COOPERATE", "DEFECT");
         assertArrayEquals(new int[]{0, 5}, cd);
+        
+        int[] dc = pd.getOutcome("DEFECT", "COOPERATE");
+        assertArrayEquals(new int[]{5, 0}, dc);
+
+        int[] dd = pd.getOutcome("DEFECT", "DEFECT");
+        assertArrayEquals(new int[]{3, 3}, dd);
+
+        int[] nn = pd.getOutcome("a", "a");
+        assertArrayEquals(new int[]{0, 0}, nn);
     }
 	
 	@Test
