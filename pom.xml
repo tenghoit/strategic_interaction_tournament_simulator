@@ -9,13 +9,13 @@
 	<description>testing rest</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>23</maven.compiler.source>
+		<maven.compiler.target>23</maven.compiler.target>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>4.0.3</version>
 		<relativePath />
 		<!--  lookup parent from repository  -->
 	</parent>
@@ -23,12 +23,12 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>17.0.14</version>
+			<version>23.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>17.0.14</version>
+			<version>23.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testfx</groupId>
@@ -67,6 +67,25 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-restclient</artifactId>
+</dependency>
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-webmvc</artifactId>
+</dependency>
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-restclient-test</artifactId>
+<scope>test</scope>
+</dependency>
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-webmvc-test</artifactId>
+<scope>test</scope>
+</dependency>
+
+		<dependency>
     		<groupId>org.apache.maven.plugins</groupId>
     		<artifactId>maven-compiler-plugin</artifactId>
     		<version>4.0.0-beta-1</version>
@@ -98,26 +117,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-	            <groupId>org.jacoco</groupId>
-	            <artifactId>jacoco-maven-plugin</artifactId>
-	            <version>0.8.14</version>
-	            <executions>
-	                <execution>
-	                    <goals>
-	                        <goal>prepare-agent</goal>
-	                    </goals>
-	                </execution>
-	                <!-- attached to Maven test phase -->
-	                <execution>
-	                    <id>report</id>
-	                    <phase>test</phase>
-	                    <goals>
-	                        <goal>report</goal>
-	                    </goals>
-	                </execution>
-	            </executions>
-	        </plugin>
 		</plugins>
 	</build>
 </project>

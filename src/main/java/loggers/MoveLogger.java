@@ -15,7 +15,7 @@ public class MoveLogger implements Listener {
 	public void update(History history) {
 		// TODO Auto-generated method stub
 	    try {
-	        FileWriter myWriter = new FileWriter(this.fileName, true);
+	        FileWriter myWriter = new FileWriter(this.fileName, false);
 	        myWriter.write(history.player1() + " " + history.action1() + "\n");
 	        myWriter.write(history.player2() + " " + history.action2() + "\n");
 	        myWriter.close();  // must close manually

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
+
 import games.PrisonerDilemma;
 import loggers.MoveLogger;
 import loggers.ScoreLogger;
@@ -15,7 +17,11 @@ import robots.Reciprocator;
 import robots.Robot;
 import tournaments.RoundRobin;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 class PrisonerDilemmaTest {
 	
@@ -79,11 +85,13 @@ class PrisonerDilemmaTest {
 	
 	@Test
 	void testLoggers() {
+		History mockHistory = new History("Charles", "Bob", "COOPERATE", "COOPERATE", 3, 3);
+		
 		assertEquals(true, pd.addListener("moves", new MoveLogger("moves.txt")));
 		assertEquals(true, pd.addListener("moves", new MoveLogger("moves2.txt")));
         
 		
-		assertEquals(false, pd.notify("scores", new History("Charles", "Bob", "COOPERATE", "COOPERATE", 0, 5)));
+		assertEquals(false, pd.notify("scores", mockHistory));
 		
 		
         ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
@@ -94,8 +102,31 @@ class PrisonerDilemmaTest {
         assertEquals(false, pd.removeListener("scores", scoreLogger2));
         assertEquals(true, pd.removeListener("scores", scoreLogger));
         
-        assertEquals(true, pd.notify("scores", new History("Charles", "Bob", "COOPERATE", "COOPERATE", 0, 5)));
-       
+        assertEquals(true, pd.notify("scores", mockHistory));
+        
+		scoreLogger.update(mockHistory);
+		try {
+			List<String> scoreLines = Files.readAllLines(Paths.get("scores.txt"));
+	        assertEquals("Charles 3", scoreLines.get(0));
+	        assertEquals("Bob 3", scoreLines.get(1));
+	        
+	        String testFile = "test.txt";
+	        MoveLogger moveLogger = new MoveLogger(testFile);
+	        moveLogger.update(mockHistory);
+	        
+	        List<String> lines = Files.readAllLines(Paths.get(testFile));
+	        assertEquals("Charles COOPERATE", lines.get(0));
+	        assertEquals("Bob COOPERATE", lines.get(1));
+	        
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		
+		
+}
+		
+
         
 	}
 	

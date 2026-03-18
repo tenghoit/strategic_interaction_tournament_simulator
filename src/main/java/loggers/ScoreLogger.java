@@ -16,7 +16,7 @@ public class ScoreLogger implements Listener {
 	public void update(History history) {
 		// TODO Auto-generated method stub
 	    try {
-	        FileWriter myWriter = new FileWriter(this.fileName, true);
+	        FileWriter myWriter = new FileWriter(this.fileName, false);
 	        myWriter.write(history.player1() + " " + history.result1() + "\n");
 	        myWriter.write(history.player2() + " " + history.result2() + "\n");
 	        myWriter.close();  // must close manually

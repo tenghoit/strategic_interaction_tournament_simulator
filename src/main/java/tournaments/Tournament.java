@@ -64,6 +64,10 @@ public abstract class Tournament {
 	    return rankings;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public Boolean addPlayer(Robot player) {
 		if(!this.isOpen()) {
 			return false;
