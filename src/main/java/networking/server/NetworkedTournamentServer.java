@@ -36,11 +36,25 @@ public class NetworkedTournamentServer {
 	ArrayList<Tournament> tournaments;
 	
 	
-	
 	public NetworkedTournamentServer() {
 		Game pd = new PrisonerDilemma();
 		this.tournaments = new ArrayList<Tournament>();
 		this.tournaments.add(new RoundRobin("RoundRobin PD", pd));
+	}
+	
+	public void addTournament(Tournament tournament) {
+		this.tournaments.add(tournament);
+	}
+	
+	public ArrayList<Tournament> getActiveTournaments(){
+		ArrayList<Tournament> curr = new ArrayList<Tournament>();
+		for(Tournament tour: this.tournaments) {
+			if(tour.isOpen() == true)
+			{
+				curr.add(tour);
+			}
+		}
+		return curr;
 	}
 
 	@Autowired

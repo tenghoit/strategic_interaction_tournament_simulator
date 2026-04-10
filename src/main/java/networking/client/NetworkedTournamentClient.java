@@ -40,13 +40,26 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
 		.run(args);
 	}
 	
-	private Robot bot = new Cooperator("jeff");
+	private Robot bot;
 	int assignedPort;
 	String assignedIP;
 	String serverUrl = "http://localhost:8080";
 
 	@Autowired
 	private ServletWebServerApplicationContext serverContext;
+	
+	public NetworkedTournamentClient() {
+		this.bot = new Cooperator("Jeff");
+	}
+	
+	public NetworkedTournamentClient(Robot bot) {
+		this.bot = bot;
+	}
+	
+	public void setBot(Robot bot) {
+		this.bot = bot;
+	}
+	
 
 	public int getAssignedPort() {
 		return assignedPort;

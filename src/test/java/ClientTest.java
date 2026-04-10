@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.client.RestTestClient;
 import models.History;
 import models.MatchDetails;
 import networking.client.NetworkedTournamentClient;
+import robots.Defector;
+import robots.Reciprocator;
 import robots.RemoteBot;
 import robots.Robot;
 
@@ -47,5 +49,36 @@ public class ClientTest {
 		.exchange()
 		.expectBody(String.class)
 		.isEqualTo("COOPERATE");
+		
+		
+		client.setBot(new Defector("Carl"));
+		
+		tClient.post().uri("/action")
+		.body(details)
+		.exchange()
+		.expectBody(String.class)
+		.isEqualTo("DEFECT");
+		
+		
+		ArrayList<History> history = new ArrayList<History>();
+		history.add(new History("Bob", "Charles", "DEFECT", "COOPERATE", 0, 5));
+		
+		client.setBot(new Reciprocator("Charles"));
+		
+		tClient.post().uri("/action")
+		.body(new MatchDetails("Bob", history))
+		.exchange()
+		.expectBody(String.class)
+		.isEqualTo("DEFECT");
+		
+		
+		history.add(new History("Bob", "Charles", "COOPERATE", "COOPERATE", 3, 3));
+		
+		tClient.post().uri("/action")
+		.body(new MatchDetails("Bob", history))
+		.exchange()
+		.expectBody(String.class)
+		.isEqualTo("COOPERATE");
+		
 	}
 }
