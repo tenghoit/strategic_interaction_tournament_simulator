@@ -6,10 +6,19 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import games.Game;
+import loggers.Listener;
 import models.History;
 import robots.Robot;
 
 public abstract class Tournament {
+	
+	String name;
+	Game game;
+	ArrayList<Robot> players;
+	ArrayList<History> history;
+	ArrayList<Robot[]> bracket;
+	ArrayList<Listener> listeners;
+	
 	public Tournament(String name, Game game) {
 		super();
 		this.name = name;
@@ -17,12 +26,8 @@ public abstract class Tournament {
 		this.players = new ArrayList<Robot>();
 		this.history = new ArrayList<History>();
 		this.bracket = new ArrayList<Robot[]>();
+		this.listeners = new ArrayList<Listener>();
 	}
-	String name;
-	Game game;
-	ArrayList<Robot> players;
-	ArrayList<History> history;
-	ArrayList<Robot[]> bracket;
 	
 	public Robot[] run() {
 		
@@ -34,7 +39,8 @@ public abstract class Tournament {
 			Robot player2 = currentMatchup[1];
 			
 			History match  = this.game.play(player1, player2, this.getHistory());
-			this.getHistory().add(match);
+			this.history.add(match);
+			this.notify(match);
 			this.updateBracket();
 		}
 		
@@ -81,6 +87,10 @@ public abstract class Tournament {
 	
 	public abstract void getBracket();
 	
+	public ArrayList<Listener> getListeners() {
+		return listeners;
+	}
+
 	public abstract void updateBracket();
 	
 	public abstract Boolean isOpen();
@@ -89,4 +99,24 @@ public abstract class Tournament {
 		return history;
 	}
 	
+	public Boolean addListener(Listener l) {
+		this.listeners.add(l);
+		return true;
+	}
+	
+	public Boolean removeListener(Listener l) {
+		if(this.listeners.contains(l)) {
+			this.listeners.remove(l);
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
+	
+	public void notify(History match) {
+		for(Listener l: this.listeners) {
+			l.update(match);
+		}
+	}
 }

@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import games.Game;
 import games.PrisonerDilemma;
+import loggers.RemoteListener;
 import models.RegistrationRequest;
+import models.SpectateRequest;
 import robots.RemoteBot;
 import robots.Robot;
 import tournaments.RoundRobin;
@@ -46,10 +48,10 @@ public class NetworkedTournamentServer {
 		this.tournaments.add(tournament);
 	}
 	
-	public ArrayList<Tournament> getActiveTournaments(){
+	public ArrayList<Tournament> getTournamentsByStatus(Boolean status){
 		ArrayList<Tournament> curr = new ArrayList<Tournament>();
 		for(Tournament tour: this.tournaments) {
-			if(tour.isOpen() == true)
+			if(tour.isOpen() == status)
 			{
 				curr.add(tour);
 			}
@@ -68,31 +70,50 @@ public class NetworkedTournamentServer {
     }
 	
 	
-	@GetMapping("/tournaments")
-    public String[] getTournaments() {
-        return tournaments.stream()
+	@GetMapping("/openTournaments")
+    public String[] getOpenTournaments() {
+        return this.getTournamentsByStatus(true).stream()
+                .map(Tournament::getName)
+                .toArray(String[]::new);
+    }
+	
+	@GetMapping("/closedTournaments")
+    public String[] getClosedTournaments() {
+        return this.getTournamentsByStatus(false).stream()
                 .map(Tournament::getName)
                 .toArray(String[]::new);
     }
 	
 	
-	@PostMapping("/register")
-	public Boolean register(@RequestBody RegistrationRequest req) {
-		Tournament target = null;
+	public Tournament getTournament(String name) {
 		for(Tournament tour : this.tournaments) {
-			if(tour.getName().equals(req.tournamentName())) {
-				target = tour;
-				break;
+			if(tour.getName().equals(name)) {
+				return tour;
 			}
 		}
-
+		return null;
+	}
+	
+	@PostMapping("/spectate")
+	public Boolean spectate(@RequestBody SpectateRequest req) {
+		Tournament target = this.getTournament(req.tournamentName());
 		if(target == null) {
 			return false;
 		}
 		
-		Robot bot = new RemoteBot(req.robotName(), req.ip(), req.port());
-		
-		boolean result = target.addPlayer(bot);
+		Boolean result = target.addListener(new RemoteListener(req.ip(), req.port()));
+		return result;
+	}
+	
+	
+	@PostMapping("/register")
+	public Boolean register(@RequestBody RegistrationRequest req) {
+		Tournament target = this.getTournament(req.tournamentName());
+		if(target == null) {
+			return false;
+		}
+				
+		boolean result = target.addPlayer(new RemoteBot(req.robotName(), req.ip(), req.port()));
 				
 		return result;
 	}

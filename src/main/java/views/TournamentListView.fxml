@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.TournamentListController">
+   <top>
+      <VBox prefHeight="97.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="609.0" text="Server" textAlignment="CENTER">
+               <font>
+                  <Font size="37.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="100.0" prefWidth="600.0">
+               <children>
+                  <TextField id="ServerIPTextField" fx:id="ServerIPTextField" prefHeight="26.0" prefWidth="253.0" promptText="Server IP" />
+                  <TextField id="ServerPortTextField" fx:id="ServerPortTextField" prefHeight="26.0" prefWidth="239.0" promptText="Server Port" />
+                  <Button id="connectBtn" fx:id="connectBtn" mnemonicParsing="false" onAction="#onConnect" prefHeight="26.0" prefWidth="127.0" text="Connect" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.504180602006689" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <VBox prefHeight="303.0" prefWidth="585.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="371.0" text="Open Tournaments">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="OpenTournamentsListView" prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="303.0" prefWidth="576.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="371.0" text="Closed Tournaments">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="ClosedTournamentsListView" prefHeight="200.0" prefWidth="396.0" />
+                  <Button id="spectateBtn" fx:id="spectateBtn" alignment="CENTER" mnemonicParsing="false" onAction="#onSpectate" text="Spectate" />
+               </children>
+            </VBox>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>

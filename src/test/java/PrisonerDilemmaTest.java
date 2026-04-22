@@ -87,22 +87,17 @@ class PrisonerDilemmaTest {
 	void testLoggers() {
 		History mockHistory = new History("Charles", "Bob", "COOPERATE", "COOPERATE", 3, 3);
 		
-		assertEquals(true, pd.addListener("moves", new MoveLogger("moves.txt")));
-		assertEquals(true, pd.addListener("moves", new MoveLogger("moves2.txt")));
-        
+		robin = new RoundRobin("PDRR", pd);
 		
-		assertEquals(false, pd.notify("scores", mockHistory));
-		
+		assertEquals(true, robin.addListener(new MoveLogger("moves.txt")));		
 		
         ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
-        ScoreLogger scoreLogger2 = new ScoreLogger("scores2.txt");
         
-        assertEquals(false, pd.removeListener("scores", scoreLogger));
-        pd.addListener("scores", scoreLogger);
-        assertEquals(false, pd.removeListener("scores", scoreLogger2));
-        assertEquals(true, pd.removeListener("scores", scoreLogger));
+        assertEquals(false, robin.removeListener(scoreLogger));
+        robin.addListener(scoreLogger);
+        assertEquals(true, robin.removeListener(scoreLogger));
         
-        assertEquals(true, pd.notify("scores", mockHistory));
+        robin.notify(mockHistory);
         
 		scoreLogger.update(mockHistory);
 		try {

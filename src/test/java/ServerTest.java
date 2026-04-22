@@ -36,7 +36,7 @@ public class ServerTest {
 		.expectBody(String[].class)
 		.isEqualTo(expectedTournaments);
 		
-		assertEquals(1, server.getActiveTournaments().size());
+		assertEquals(1, server.getTournamentsByStatus(true).size());
 	
 		
 		RegistrationRequest badRequest = new RegistrationRequest("Bracket PD", "Jeff", "192.0.0.1", 1000);
@@ -67,7 +67,7 @@ public class ServerTest {
 	        .isEqualTo(true);
 		}
 		
-		assertEquals(0, server.getActiveTournaments().size());
+		assertEquals(0, server.getTournamentsByStatus(true).size());
 		
 		server.addTournament(new RoundRobin("RoundRobin PD 2", new PrisonerDilemma()));
 		
@@ -80,7 +80,7 @@ public class ServerTest {
 	
 //	@Test
 //	void testOpenCloseTournament() {
-//		assertEquals(1, server.getActiveTournaments().size());
+//		assertEquals(1, server.getTournamentsByStatus(true).size());
 //		
 //		for(int i = 0; i < 4; i++) {
 //			tClient.post().uri("/register")
@@ -91,7 +91,7 @@ public class ServerTest {
 //	        .isEqualTo(true);
 //		}
 //		
-//		assertEquals(0, server.getActiveTournaments().size());
+//		assertEquals(0, server.getTournamentsByStatus(true).size());
 //	}
 //	
 
