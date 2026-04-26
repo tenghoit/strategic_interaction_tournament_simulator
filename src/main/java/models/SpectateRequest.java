@@ -1,3 +1,3 @@
 package models;
 
-public record SpectateRequest(String tournamentName, String ip, String port) {}
+public record SpectateRequest(String tournamentName, String ip, int port) {}

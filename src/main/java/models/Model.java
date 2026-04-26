@@ -1,5 +1,19 @@
 package models;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.boot.web.server.servlet.context.ServletWebServerInitializedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -7,7 +21,15 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+@SpringBootApplication
+@RestController
 public class Model {
+	
+	public static void main(String[] args) {
+		new SpringApplicationBuilder(Model.class)
+		.profiles("random")
+		.run(args);
+	}
 	
 	ObservableList<String> openTournaments = FXCollections.observableArrayList();
 	ObservableList<String> closedTournaments = FXCollections.observableArrayList();
@@ -19,6 +41,19 @@ public class Model {
 	
 	
 	RestClient restClient;
+	String internalIP;
+	public String getInternalIP() {
+		return internalIP;
+	}
+
+	public int getInternalPort() {
+		return internalPort;
+	}
+
+	int internalPort;
+	
+	@Autowired
+	private ServletWebServerApplicationContext serverContext;
 	
 
 	public Model() {
@@ -55,15 +90,19 @@ public class Model {
 	
 	public void spectate(){
 		// subscribe as listener to selectedTournament (server)
-		String baseURI = String.format("http://%s:%s", this.serverIP.get(), this.serverPort.get());
-//		SpectateRequest = new SpectateRequest("") would need to know client ip, networkClient's job?
+		String baseURI = this.getServerURI();
+		SpectateRequest req = new SpectateRequest(this.selectedTournament.get(), this.internalIP, this.internalPort);
 		
+		this.restClient.post()
+			.uri(baseURI + "/spectate")
+			.contentType(MediaType.APPLICATION_JSON)
+			.body(req)
+            .retrieve()
+            .toBodilessEntity();
 	}
 	public void connect() {
 		// use server info to get tournaments
-		String baseURI = String.format("http://%s:%s", this.serverIP.get(), this.serverPort.get());
-		
-		
+		String baseURI = this.getServerURI();
 		
 		String[] openTournaments = this.restClient
 			.get()
@@ -108,5 +147,30 @@ public class Model {
 	public StringProperty getServerPort() {
 		return serverPort;
 	}
+	
+	@Bean
+    public ApplicationListener<ServletWebServerInitializedEvent> serverPortListenerBean() {
+        return event -> {
+            this.internalPort = event.getWebServer().getPort();
+            System.out.println("Port is "+this.internalPort);
+            
+            try {
+				this.internalIP = InetAddress.getLocalHost().getHostAddress();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        };
+    }
+	
+	public String getServerURI() {
+		return String.format("http://%s:%s", this.serverIP.get(), this.serverPort.get());
+	}
+	
+	@PostMapping("/update")
+	public void update(@RequestBody History match) {
+		this.events.add(match);
+	}
+	
 
 }

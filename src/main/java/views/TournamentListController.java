@@ -49,8 +49,8 @@ public class TournamentListController {
 
     @FXML
     void onConnect(ActionEvent event) {
-    	System.out.println("IP: " + this.model.getServerIP().get() + " | Port: " + this.model.getServerPort().get());
-//    	this.model.connect();
+//    	System.out.println("IP: " + this.model.getServerIP().get() + " | Port: " + this.model.getServerPort().get());
+    	this.model.connect();
     }
 
     @FXML
@@ -65,7 +65,7 @@ public class TournamentListController {
     	this.model.setSelectedTournament(selectedTournament);
     	System.out.println("Selected: " + this.model.getSelectedTournament().get());
 
-//    	this.model.spectate();
+    	this.model.spectate();
     	this.transitionModel.showSpectateView();
     	
     }

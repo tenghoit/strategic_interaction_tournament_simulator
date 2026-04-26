@@ -99,19 +99,16 @@ public abstract class Tournament {
 		return history;
 	}
 	
-	public Boolean addListener(Listener l) {
-		this.listeners.add(l);
-		return true;
+	public void addListener(Listener l) {
+		if(!this.listeners.contains(l)) {
+			this.listeners.add(l);
+		}
 	}
 	
-	public Boolean removeListener(Listener l) {
+	public void removeListener(Listener l) {
 		if(this.listeners.contains(l)) {
 			this.listeners.remove(l);
-			return true;
-		}else {
-			return false;
 		}
-		
 	}
 	
 	public void notify(History match) {

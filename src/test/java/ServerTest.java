@@ -1,4 +1,4 @@
-import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class ServerTest {
 	void testInteraction() {
 		
 		String[] expectedTournaments = {"RoundRobin PD"};
-		tClient.get().uri("/tournaments").exchange()
+		tClient.get().uri("/openTournaments").exchange()
 		.expectBody(String[].class)
 		.isEqualTo(expectedTournaments);
 		
@@ -71,28 +71,16 @@ public class ServerTest {
 		
 		server.addTournament(new RoundRobin("RoundRobin PD 2", new PrisonerDilemma()));
 		
-		tClient.get().uri("/tournaments")
+		tClient.get().uri("/openTournaments")
 		.exchange()
 		.expectBody(String[].class)
-		.isEqualTo(new String[] {"RoundRobin PD", "RoundRobin PD 2"});
+		.isEqualTo(new String[] {"RoundRobin PD 2"});
+		
+		tClient.get().uri("/closedTournaments")
+		.exchange()
+		.expectBody(String[].class)
+		.isEqualTo(new String[] {"RoundRobin PD"});
 		
 	}
-	
-//	@Test
-//	void testOpenCloseTournament() {
-//		assertEquals(1, server.getTournamentsByStatus(true).size());
-//		
-//		for(int i = 0; i < 4; i++) {
-//			tClient.post().uri("/register")
-//	        .body(new RegistrationRequest("RoundRobin PD", "Jeff", "192.0.0.1", 1000))
-//	        .exchange()
-//	        .expectStatus().isOk()
-//	        .expectBody(Boolean.class)
-//	        .isEqualTo(true);
-//		}
-//		
-//		assertEquals(0, server.getTournamentsByStatus(true).size());
-//	}
-//	
 
 }

@@ -1,9 +1,10 @@
 import static org.junit.jupiter.api.Assertions.*;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.*; // Cleaned up imports
+import static org.junit.jupiter.api.Assertions.*;
 
 
 import games.PrisonerDilemma;
@@ -86,16 +87,20 @@ class PrisonerDilemmaTest {
 	@Test
 	void testLoggers() {
 		History mockHistory = new History("Charles", "Bob", "COOPERATE", "COOPERATE", 3, 3);
-		
 		robin = new RoundRobin("PDRR", pd);
 		
-		assertEquals(true, robin.addListener(new MoveLogger("moves.txt")));		
+		robin.addListener(new MoveLogger("moves.txt"));
+		assertEquals(1, robin.getListeners().size());
 		
         ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
+        robin.removeListener(scoreLogger);
+        assertEquals(1, robin.getListeners().size());
         
-        assertEquals(false, robin.removeListener(scoreLogger));
         robin.addListener(scoreLogger);
-        assertEquals(true, robin.removeListener(scoreLogger));
+        assertEquals(2, robin.getListeners().size());
+        
+        robin.removeListener(scoreLogger);
+        assertEquals(1, robin.getListeners().size());
         
         robin.notify(mockHistory);
         

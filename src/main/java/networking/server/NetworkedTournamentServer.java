@@ -95,14 +95,13 @@ public class NetworkedTournamentServer {
 	}
 	
 	@PostMapping("/spectate")
-	public Boolean spectate(@RequestBody SpectateRequest req) {
+	public void spectate(@RequestBody SpectateRequest req) {
 		Tournament target = this.getTournament(req.tournamentName());
 		if(target == null) {
-			return false;
+			return;
 		}
 		
-		Boolean result = target.addListener(new RemoteListener(req.ip(), req.port()));
-		return result;
+		target.addListener(new RemoteListener(req.ip(), req.port()));
 	}
 	
 	

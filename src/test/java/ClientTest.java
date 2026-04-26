@@ -44,11 +44,15 @@ public class ClientTest {
 	void testClient() {
 		MatchDetails details = new MatchDetails("", new ArrayList<History>());
 		
+		RemoteBot rb = new RemoteBot(client.getBot().getName(), client.getAssignedIP(), client.getAssignedPort());
+		
 		tClient.post().uri("/action")
 		.body(details)
 		.exchange()
 		.expectBody(String.class)
 		.isEqualTo("COOPERATE");
+		
+		assertEquals("COOPERATE", rb.getAction("", new ArrayList<History>()));
 		
 		
 		client.setBot(new Defector("Carl"));

@@ -7,16 +7,17 @@ import models.History;
 
 public class RemoteListener implements Listener {
 	String ip;
-	String port;
+	int port;
 	RestClient client;
 
-	public RemoteListener(String ip, String port) {
+	public RemoteListener(String ip, int port) {
 		// TODO Auto-generated constructor stub
 		this.ip = ip;
 		this.port = port;  
 		this.client = RestClient.create();
 	}
 	
+
 	@Override
 	public void update(History history) {
 	    String baseUri = "http://" + this.ip + ":" + this.port + "/update";

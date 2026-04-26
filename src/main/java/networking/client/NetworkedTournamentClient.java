@@ -65,6 +65,10 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
 		return assignedPort;
 	}
 
+	public Robot getBot() {
+		return bot;
+	}
+
 	public String getAssignedIP() {
 		return assignedIP;
 	}
