@@ -33,12 +33,12 @@ public class ServerTest {
 	@Test
 	void testInteraction() {
 		
-		String[] expectedTournaments = {"TestTournament"};
+		String[] expectedTournaments = {"TestTournament", "AlmostFullTournament"};
 		tClient.get().uri("/openTournaments").exchange()
 		.expectBody(String[].class)
 		.isEqualTo(expectedTournaments);
 		
-		assertEquals(1, server.getTournamentsByStatus(true).size());
+		assertEquals(2, server.getTournamentsByStatus(true).size());
 	
 		
 		RegistrationRequest badRequest = new RegistrationRequest("Bracket PD", "Jeff", "192.0.0.1", 1000);
@@ -69,14 +69,14 @@ public class ServerTest {
 	        .isEqualTo(true);
 		}
 		
-		assertEquals(0, server.getTournamentsByStatus(true).size());
+		assertEquals(1, server.getTournamentsByStatus(true).size());
 		
 		server.addTournament(new RoundRobin("TestTournament 2", new PrisonerDilemma()));
 		
 		tClient.get().uri("/openTournaments")
 		.exchange()
 		.expectBody(String[].class)
-		.isEqualTo(new String[] {"TestTournament 2"});
+		.isEqualTo(new String[] {"AlmostFullTournament", "TestTournament 2"});
 		
 		tClient.get().uri("/closedTournaments")
 		.exchange()

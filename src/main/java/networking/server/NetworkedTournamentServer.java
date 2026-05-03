@@ -57,6 +57,13 @@ public class NetworkedTournamentServer {
 		fullTournament.addPlayer(new Cooperator("Dave"));
 		
 		this.tournaments.add(fullTournament);
+		
+		Tournament almostFullTournament = new RoundRobin("AlmostFullTournament", pd);
+		almostFullTournament.addPlayer(new Cooperator("Alice"));
+		almostFullTournament.addPlayer(new Defector("Bob"));
+		almostFullTournament.addPlayer(new Reciprocator("Charles"));
+		this.tournaments.add(almostFullTournament);
+		
 	}
 	
 	public void addTournament(Tournament tournament) {

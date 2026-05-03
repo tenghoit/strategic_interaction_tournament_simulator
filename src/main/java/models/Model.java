@@ -167,7 +167,7 @@ public class Model {
             
             try {
 				this.internalIP = InetAddress.getLocalHost().getHostAddress();
-				this.internalIP = "localhost";
+//				this.internalIP = "localhost";
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
