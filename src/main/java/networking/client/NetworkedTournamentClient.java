@@ -77,6 +77,7 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
             
             try {
 				this.assignedIP = InetAddress.getLocalHost().getHostAddress();
+				this.assignedIP = "localhost"; // for testing
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
