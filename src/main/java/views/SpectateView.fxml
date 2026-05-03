@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.SpectateController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.SpectateController">
    <top>
       <HBox prefHeight="48.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -27,4 +27,13 @@
    <center>
       <ListView id="EventListView" fx:id="EventListView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="previousBtn" fx:id="previousBtn" mnemonicParsing="false" onAction="#previous" text="Previous" />
+            <Button id="togglePlaybackBtn" fx:id="togglePlaybackBtn" mnemonicParsing="false" onAction="#togglePlayback" text="Play/Pause" />
+            <Button id="forwardBtn" fx:id="forwardBtn" mnemonicParsing="false" onAction="#forward" text="Forward" />
+         </children>
+      </HBox>
+   </bottom>
 </BorderPane>

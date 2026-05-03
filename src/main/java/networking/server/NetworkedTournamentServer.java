@@ -1,7 +1,9 @@
 package networking.server;
 
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,8 +13,10 @@ import org.springframework.boot.web.server.servlet.context.ServletWebServerIniti
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import games.Game;
@@ -20,6 +24,9 @@ import games.PrisonerDilemma;
 import loggers.RemoteListener;
 import models.RegistrationRequest;
 import models.SpectateRequest;
+import robots.Cooperator;
+import robots.Defector;
+import robots.Reciprocator;
 import robots.RemoteBot;
 import robots.Robot;
 import tournaments.RoundRobin;
@@ -41,7 +48,15 @@ public class NetworkedTournamentServer {
 	public NetworkedTournamentServer() {
 		Game pd = new PrisonerDilemma();
 		this.tournaments = new ArrayList<Tournament>();
-		this.tournaments.add(new RoundRobin("RoundRobin PD", pd));
+		this.tournaments.add(new RoundRobin("TestTournament", pd));
+		
+		Tournament fullTournament = new RoundRobin("FullTournament", pd);
+		fullTournament.addPlayer(new Cooperator("Alice"));
+		fullTournament.addPlayer(new Defector("Bob"));
+		fullTournament.addPlayer(new Reciprocator("Charles"));
+		fullTournament.addPlayer(new Cooperator("Dave"));
+		
+		this.tournaments.add(fullTournament);
 	}
 	
 	public void addTournament(Tournament tournament) {
@@ -95,13 +110,14 @@ public class NetworkedTournamentServer {
 	}
 	
 	@PostMapping("/spectate")
-	public void spectate(@RequestBody SpectateRequest req) {
+	public Boolean spectate(@RequestBody SpectateRequest req) {
 		Tournament target = this.getTournament(req.tournamentName());
 		if(target == null) {
-			return;
+			return false;
 		}
 		
 		target.addListener(new RemoteListener(req.ip(), req.port()));
+		return true;
 	}
 	
 	
@@ -115,6 +131,16 @@ public class NetworkedTournamentServer {
 		boolean result = target.addPlayer(new RemoteBot(req.robotName(), req.ip(), req.port()));
 				
 		return result;
+	} 
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/run/{tournamentName}")
+	public String run(@PathVariable String tournamentName) {
+		
+		// Fire and forget
+	    CompletableFuture.runAsync(() -> this.getTournament(tournamentName).run());
+
+	    return "Tournament started: " + tournamentName; 
 	}
 	
 	

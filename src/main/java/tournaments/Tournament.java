@@ -18,6 +18,7 @@ public abstract class Tournament {
 	ArrayList<History> history;
 	ArrayList<Robot[]> bracket;
 	ArrayList<Listener> listeners;
+	int delay;
 	
 	public Tournament(String name, Game game) {
 		super();
@@ -27,10 +28,11 @@ public abstract class Tournament {
 		this.history = new ArrayList<History>();
 		this.bracket = new ArrayList<Robot[]>();
 		this.listeners = new ArrayList<Listener>();
+		this.delay = 0;
 	}
 	
 	public Robot[] run() {
-		
+		this.delay = 100;
 		this.getBracket();
 				
 		while (this.checkEnd() == false) {
@@ -42,6 +44,13 @@ public abstract class Tournament {
 			this.history.add(match);
 			this.notify(match);
 			this.updateBracket();
+			
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return this.getRankings();

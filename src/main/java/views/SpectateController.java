@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import models.History;
 import models.Model;
+import models.PlaybackInvoker;
 import models.ViewTransitionModelInterface;
 
 public class SpectateController {
@@ -19,8 +20,10 @@ public class SpectateController {
 		this.model = newModel;
 		this.transitionModel = transitionModel;
 		
+		
 		Bindings.bindBidirectional(ActiveTournamentNameLabel.textProperty(), this.model.getSelectedTournament());
 		EventListView.setItems(this.model.getEvents());
+		
 	}
 
     @FXML
@@ -28,6 +31,16 @@ public class SpectateController {
     
     @FXML
     private Button backBtn;
+    
+
+    @FXML
+    private Button forwardBtn;
+
+    @FXML
+    private Button togglePlaybackBtn;
+
+    @FXML
+    private Button previousBtn;
 
     @FXML
     private ListView<History> EventListView;
@@ -39,6 +52,22 @@ public class SpectateController {
 	@FXML
     void back(ActionEvent event) {
     	this.transitionModel.showTournamentList();
+    }
+	
+
+    @FXML
+    void forward(ActionEvent event) {
+    	this.model.forward();
+    }
+
+    @FXML
+    void previous(ActionEvent event) {
+    	this.model.previous();
+    }
+
+    @FXML
+    void togglePlayback(ActionEvent event) {
+    	this.model.togglePlayback();
     }
 
 }

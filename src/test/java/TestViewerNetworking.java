@@ -1,15 +1,27 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.testfx.api.FxRobot;
 import org.testfx.assertions.api.Assertions;
+import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.Start;
+import org.testfx.util.WaitForAsyncUtils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import loggers.RemoteListener;
 import models.History;
 import models.Model;
+import models.ViewTransitionalModel;
 
 @SpringBootTest(
 		webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -17,11 +29,33 @@ import models.Model;
 )
 
 @AutoConfigureRestTestClient
-
+@ExtendWith(ApplicationExtension.class)
 public class TestViewerNetworking {
 	
 	@Autowired
 	private Model model;
+	BorderPane root;
+	ViewTransitionalModel vm;
+	Scene s;
+	Stage stage;
+	
+	@Start  //Before
+	private void start(Stage stage)
+	{
+	
+		
+		root = new BorderPane();
+		
+		vm = new ViewTransitionalModel(root, model); 
+		
+		vm.showTournamentList();
+	  
+		s = new Scene(root);
+		this.stage = stage;
+		this.stage.setScene(s);
+		this.stage.show();
+	    
+	}
 
 	@Test
 	void testRemoteListener() {
@@ -30,7 +64,7 @@ public class TestViewerNetworking {
 				new History("Alice", "Charles", "COOPERATE", "COOPERATE", 3, 3)
 		);
 		
-		RemoteListener rl = new RemoteListener(model.getInternalIP(), model.getInternalPort());
+		RemoteListener rl = new RemoteListener("localhost", model.getInternalPort());
 		
 		Assertions.assertThat(model.getEvents()).hasSize(0);
 		
@@ -39,5 +73,81 @@ public class TestViewerNetworking {
 		
 		rl.update(histories.get(1));
 		Assertions.assertThat(model.getEvents()).hasSize(2);
+	}
+	
+	@Test
+	public void TestServerButtons(FxRobot robot) {
+		changeServerIP(robot, "localhost");
+		changeServerPort(robot, "9090");
+		
+		Button btn = robot.lookup("#connectBtn").queryAs(Button.class);
+		robot.interact(() -> {
+			btn.requestFocus();
+			btn.fire();
+		});
+		
+		
+		WaitForAsyncUtils.waitForFxEvents();
+		
+		
+		ObservableList<String> tournaments = FXCollections.observableArrayList("TestTournament");
+		
+		ListView<String> openTournaments = getOpenTournaments(robot);
+		
+		Assertions.assertThat(model.getOpenTournaments()).hasSize(tournaments.size());
+		
+		Assertions.assertThat(openTournaments).hasExactlyNumItems(tournaments.size());
+		
+		for(String name: tournaments) {
+			Assertions.assertThat(openTournaments).hasListCell(name);
+		}
+		
+		
+		
+		Button btn2 = robot.lookup("#spectateBtn").queryAs(Button.class);
+		robot.interact(() -> {
+			btn.requestFocus();
+			btn.fire();
+		});
+		
+		WaitForAsyncUtils.waitForFxEvents();
+		
+		ListView<String> closedTournaments = getClosedTournaments(robot);
+		
+		closedTournaments.getSelectionModel().clearAndSelect(0);
+		
+		Assertions.assertThat(robot.lookup("#backBtn")).isNotNull();
+		
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private ListView<String> getOpenTournaments(FxRobot robot){
+		return (ListView<String>) robot.lookup("#OpenTournamentsListView").queryAll().iterator().next();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ListView<String> getClosedTournaments(FxRobot robot){
+		return (ListView<String>) robot.lookup("#ClosedTournamentsListView").queryAll().iterator().next();
+	}
+	
+	
+	private void changeServerPort(FxRobot robot, String serverPort)
+	{
+		TextField portField = robot.lookup("#ServerPortTextField").queryAs(TextField.class);
+		robot.interact(() -> {
+		    portField.requestFocus();
+		    portField.setText(serverPort);
+		});
+	}
+	
+	
+	private void changeServerIP(FxRobot robot, String serverIP)
+	{	
+		TextField portField = robot.lookup("#ServerIPTextField").queryAs(TextField.class);
+		robot.interact(() -> {
+		    portField.requestFocus();
+		    portField.setText(serverIP);
+		});
 	}
 }

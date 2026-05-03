@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
 import games.PrisonerDilemma;
 import models.RegistrationRequest;
+import models.SpectateRequest;
 import networking.server.NetworkedTournamentServer;
 import tournaments.RoundRobin;
 
@@ -31,7 +33,7 @@ public class ServerTest {
 	@Test
 	void testInteraction() {
 		
-		String[] expectedTournaments = {"RoundRobin PD"};
+		String[] expectedTournaments = {"TestTournament"};
 		tClient.get().uri("/openTournaments").exchange()
 		.expectBody(String[].class)
 		.isEqualTo(expectedTournaments);
@@ -40,7 +42,7 @@ public class ServerTest {
 	
 		
 		RegistrationRequest badRequest = new RegistrationRequest("Bracket PD", "Jeff", "192.0.0.1", 1000);
-		RegistrationRequest goodRequest = new RegistrationRequest("RoundRobin PD", "Jeff", "192.0.0.1", 1000);
+		RegistrationRequest goodRequest = new RegistrationRequest("TestTournament", "Jeff", "192.0.0.1", 1000);
 		
 		tClient.post().uri("/register")
         .body(badRequest) 
@@ -60,7 +62,7 @@ public class ServerTest {
 		
 		for(int i = 0; i < 3; i++) {
 			tClient.post().uri("/register")
-	        .body(new RegistrationRequest("RoundRobin PD", "Jeff", "192.0.0.1", 1000))
+	        .body(new RegistrationRequest("TestTournament", "Jeff", "192.0.0.1", 1000))
 	        .exchange()
 	        .expectStatus().isOk()
 	        .expectBody(Boolean.class)
@@ -69,18 +71,39 @@ public class ServerTest {
 		
 		assertEquals(0, server.getTournamentsByStatus(true).size());
 		
-		server.addTournament(new RoundRobin("RoundRobin PD 2", new PrisonerDilemma()));
+		server.addTournament(new RoundRobin("TestTournament 2", new PrisonerDilemma()));
 		
 		tClient.get().uri("/openTournaments")
 		.exchange()
 		.expectBody(String[].class)
-		.isEqualTo(new String[] {"RoundRobin PD 2"});
+		.isEqualTo(new String[] {"TestTournament 2"});
 		
 		tClient.get().uri("/closedTournaments")
 		.exchange()
 		.expectBody(String[].class)
-		.isEqualTo(new String[] {"RoundRobin PD"});
+		.isEqualTo(new String[] {"TestTournament", "FullTournament"});
 		
+		
+		SpectateRequest badSpectateRequest = new SpectateRequest("BadTournament", "1.1.1.1", 1);
+		SpectateRequest goodSpectateRequest = new SpectateRequest("TestTournament", "1.1.1.1", 1);
+		
+		
+		tClient.post()
+			.uri("/spectate")
+			.body(badSpectateRequest)
+			.exchange()
+	        .expectStatus().isOk()
+	        .expectBody(Boolean.class)
+	        .isEqualTo(false);
+		
+		tClient.post()
+		.uri("/spectate")
+		.body(goodSpectateRequest)
+		.exchange()
+        .expectStatus().isOk()
+        .expectBody(Boolean.class)
+        .isEqualTo(true);
+	
 	}
 
 }

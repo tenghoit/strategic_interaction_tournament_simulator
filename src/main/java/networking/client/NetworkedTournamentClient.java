@@ -52,10 +52,6 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
 		this.bot = new Cooperator("Jeff");
 	}
 	
-	public NetworkedTournamentClient(Robot bot) {
-		this.bot = bot;
-	}
-	
 	public void setBot(Robot bot) {
 		this.bot = bot;
 	}

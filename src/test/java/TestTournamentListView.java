@@ -3,6 +3,9 @@
 import org.testfx.assertions.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -11,16 +14,22 @@ import org.testfx.util.WaitForAsyncUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import models.ViewTransitionalModel;
+import networking.server.NetworkedTournamentServer;
 import models.Model;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 @ExtendWith(ApplicationExtension.class)
 public class TestTournamentListView {
+	
 	
 	Model model;
 	BorderPane root;
@@ -133,7 +142,7 @@ public class TestTournamentListView {
 		
 		model.setClosedTournaments(tournaments);
 		
-		WaitForAsyncUtils.waitForFxEvents();
+		WaitForAsyncUtils.waitForFxEvents();  
 		
 		Assertions.assertThat(closedTournaments).hasExactlyNumItems(tournaments.size());
 		
@@ -150,10 +159,8 @@ public class TestTournamentListView {
 		Assertions.assertThat(closedTournaments.getSelectionModel().getSelectedItem()).isEqualTo("t3");
 		
 		
-		robot.clickOn("#spectateBtn");
-		WaitForAsyncUtils.waitForFxEvents();
-		Assertions.assertThat(robot.lookup("spectateBtn")).isNotNull();
-		
 	}
+	
+
 
 }

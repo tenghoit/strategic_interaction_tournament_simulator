@@ -31,9 +31,11 @@ public class Model {
 		.run(args);
 	}
 	
-	ObservableList<String> openTournaments = FXCollections.observableArrayList();
-	ObservableList<String> closedTournaments = FXCollections.observableArrayList();
-	ObservableList<History> events = FXCollections.observableArrayList();
+	ObservableList<String> openTournaments;
+	ObservableList<String> closedTournaments;
+	ObservableList<History> events;
+	
+	PlaybackInvoker playbackInvoker;
 	
 	StringProperty serverIP;
 	StringProperty serverPort;
@@ -64,11 +66,17 @@ public class Model {
 		
 		this.restClient = RestClient.create();
 		
+		openTournaments = FXCollections.observableArrayList();
+		closedTournaments = FXCollections.observableArrayList();
+		events = FXCollections.observableArrayList();
+		
 //		ObservableList<String> tournaments = FXCollections.observableArrayList("t3", "t4");
 //		this.setClosedTournaments(tournaments);
 		
 //		ObservableList<History> events = FXCollections.observableArrayList(new History("Bob", "Charles", "DEFECT", "COOPERATE", 5, 0));
 //		this.setEvents(events);
+		
+		this.playbackInvoker = new PlaybackInvoker();
 		
 	}
 	
@@ -95,11 +103,12 @@ public class Model {
 		
 		this.restClient.post()
 			.uri(baseURI + "/spectate")
-			.contentType(MediaType.APPLICATION_JSON)
 			.body(req)
+			.contentType(MediaType.APPLICATION_JSON)
             .retrieve()
             .toBodilessEntity();
 	}
+	
 	public void connect() {
 		// use server info to get tournaments
 		String baseURI = this.getServerURI();
@@ -111,6 +120,8 @@ public class Model {
 			.body(String[].class);
 		
 		this.setOpenTournaments(FXCollections.observableArrayList(openTournaments));
+		
+		System.out.println(openTournaments);
 		
 		
 		
@@ -156,6 +167,7 @@ public class Model {
             
             try {
 				this.internalIP = InetAddress.getLocalHost().getHostAddress();
+				this.internalIP = "localhost";
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -169,8 +181,21 @@ public class Model {
 	
 	@PostMapping("/update")
 	public void update(@RequestBody History match) {
-		this.events.add(match);
+	    // This ensures the UI update happens on the JavaFX thread
+	    javafx.application.Platform.runLater(() -> {
+	        this.playbackInvoker.add(new PlaybackCommand(match, this.events));
+	    });
 	}
 	
+	public void togglePlayback() {
+		this.playbackInvoker.togglePlayback();
+	}
+	
+	public void forward() {
+		this.playbackInvoker.forward();
+	}
 
+	public void previous() {
+		this.playbackInvoker.previous();
+	}
 }
