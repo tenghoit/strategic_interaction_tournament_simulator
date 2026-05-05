@@ -29,6 +29,8 @@ public class RemoteListener implements Listener {
 	            .body(history)
 	            .retrieve()
 	            .toBodilessEntity();
+	        
+	        System.err.println("Sent update to " + baseUri);
 	    } catch (Exception e) {
 	        System.err.println("Failed to send update to " + baseUri + ": " + e.getMessage());
 	    }

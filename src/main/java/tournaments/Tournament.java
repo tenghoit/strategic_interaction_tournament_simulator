@@ -32,7 +32,7 @@ public abstract class Tournament {
 	}
 	
 	public Robot[] run() {
-		this.delay = 100;
+		this.delay = 1000;
 		this.getBracket();
 				
 		while (this.checkEnd() == false) {

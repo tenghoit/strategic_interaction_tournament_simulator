@@ -103,7 +103,9 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
 	@ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
 	public String getAction(@RequestBody MatchDetails details) {
-		return this.bot.getAction(details.opponentName(), details.history());
+		String result = this.bot.getAction(details.opponentName(), details.history());
+		System.err.println("Senting Response: " + result);
+		return result;
 	}
 	
 	@RequestMapping("/join")

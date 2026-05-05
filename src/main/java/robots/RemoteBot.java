@@ -26,14 +26,21 @@ public class RemoteBot extends Robot {
         
         // Construct the full URL for the client robot
         String uri = "http://" + this.ip + ":" + this.port + "/action";
+        System.err.println("RemoteBot: Requesting action from " + uri);
 
         try {
-            return this.client.post()
+            String result = this.client.post()
                     .uri(uri)
                     .contentType(MediaType.APPLICATION_JSON) // CRITICAL: Tell the client this is JSON
                     .body(details)
                     .retrieve()
                     .body(String.class);
+            
+            System.err.println("RemoteBot: Received action: " + result);
+            
+            return result;
+            
+            
         } catch (Exception e) {
             System.err.println("Communication failure with bot " + getName() + " at " + uri);
             return "ERROR"; // Or a default move like "COOPERATE"

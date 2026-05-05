@@ -185,6 +185,7 @@ public class Model {
 	    javafx.application.Platform.runLater(() -> {
 	        this.playbackInvoker.add(new PlaybackCommand(match, this.events));
 	    });
+	    System.err.println("Received update");
 	}
 	
 	public void togglePlayback() {
