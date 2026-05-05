@@ -87,7 +87,7 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
     public ApplicationListener<ServletWebServerInitializedEvent> serverPortListenerBean() {
         return event -> {
             this.assignedPort = event.getWebServer().getPort();
-            System.out.println("Port is "+this.assignedPort);
+            System.out.println("Port is " + this.assignedPort);
             
             try {
 				this.assignedIP = InetAddress.getLocalHost().getHostAddress();
@@ -104,15 +104,15 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
     @PostMapping("")
 	public String getAction(@RequestBody MatchDetails details) {
 		String result = this.bot.getAction(details.opponentName(), details.history());
-		System.err.println("Senting Response: " + result);
+		System.out.println("Senting Response: " + result);
 		return result;
 	}
 	
-	@RequestMapping("/join")
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("")
-	public Boolean join() {
-		RegistrationRequest req = new RegistrationRequest("AlmostFullTournament", bot.getName(), assignedIP, assignedPort);
+	@RequestMapping("/join/{tournamentName}")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("")
+	public Boolean join(@PathVariable String tournamentName) {
+		RegistrationRequest req = new RegistrationRequest(tournamentName, bot.getName(), assignedIP, assignedPort);
 		
 		Boolean result = restClient.post()
 			.uri(getServerURI() + "/register")
@@ -120,6 +120,12 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
 			.contentType(MediaType.APPLICATION_JSON)
 			.retrieve()
 			.body(Boolean.class);
+
+		if(result == true){
+			System.out.println("Successfully joined " + tournamentName + " on " + getServerURI());
+		}else{
+			System.err.println("Failed to join " + tournamentName + " on " + getServerURI());
+		}
 		
 		return result;
 	}

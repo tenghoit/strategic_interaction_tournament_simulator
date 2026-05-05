@@ -26,7 +26,7 @@ public class RemoteBot extends Robot {
         
         // Construct the full URL for the client robot
         String uri = "http://" + this.ip + ":" + this.port + "/action";
-        System.err.println("RemoteBot: Requesting action from " + uri);
+        System.out.println("RemoteBot: Requesting action from " + uri);
 
         try {
             String result = this.client.post()
@@ -36,13 +36,13 @@ public class RemoteBot extends Robot {
                     .retrieve()
                     .body(String.class);
             
-            System.err.println("RemoteBot: Received action: " + result);
+            System.out.println("RemoteBot: Received action: " + result);
             
             return result;
             
             
         } catch (Exception e) {
-            System.err.println("Communication failure with bot " + getName() + " at " + uri);
+            System.err.println("RemoteBot: failed to get action from " + uri);
             return "ERROR"; // Or a default move like "COOPERATE"
         }
     }

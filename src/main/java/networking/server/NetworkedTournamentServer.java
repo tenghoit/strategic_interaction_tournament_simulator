@@ -124,6 +124,8 @@ public class NetworkedTournamentServer {
 		}
 		
 		target.addListener(new RemoteListener(req.ip(), req.port()));
+
+		System.out.println("Added listener from " + req.ip() + ":" +  req.port() + " to " + req.tournamentName());
 		return true;
 	}
 	
@@ -136,7 +138,11 @@ public class NetworkedTournamentServer {
 		}
 				
 		boolean result = target.addPlayer(new RemoteBot(req.robotName(), req.ip(), req.port()));
-				
+		
+		if(result){
+			System.out.println("Added " + req.robotName() + " from " + req.ip() + ":" +  req.port() + " to " + req.tournamentName());
+		}
+		
 		return result;
 	} 
 	

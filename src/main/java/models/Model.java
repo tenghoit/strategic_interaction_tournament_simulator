@@ -101,12 +101,16 @@ public class Model {
 		String baseURI = this.getServerURI();
 		SpectateRequest req = new SpectateRequest(this.selectedTournament.get(), this.internalIP, this.internalPort);
 		
-		this.restClient.post()
+		Boolean result = this.restClient.post()
 			.uri(baseURI + "/spectate")
 			.body(req)
 			.contentType(MediaType.APPLICATION_JSON)
             .retrieve()
-            .toBodilessEntity();
+            .body(Boolean.class);
+
+		if(result){
+			System.out.println("Successfully joined as spectator to " + selectedTournament.get() + " on " + getServerURI());
+		}
 	}
 	
 	public void connect() {
@@ -185,7 +189,7 @@ public class Model {
 	    javafx.application.Platform.runLater(() -> {
 	        this.playbackInvoker.add(new PlaybackCommand(match, this.events));
 	    });
-	    System.err.println("Received update");
+	    System.out.println("Received update");
 	}
 	
 	public void togglePlayback() {
