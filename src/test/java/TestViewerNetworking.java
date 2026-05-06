@@ -1,9 +1,14 @@
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.testfx.api.FxRobot;
 import org.testfx.assertions.api.Assertions;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -22,22 +27,38 @@ import loggers.RemoteListener;
 import models.History;
 import models.Model;
 import models.ViewTransitionalModel;
+import networking.server.NetworkedTournamentServer;
 
 @SpringBootTest(
 		webEnvironment = WebEnvironment.RANDOM_PORT,
 		classes = Model.class
+		
 )
 
 @AutoConfigureRestTestClient
 @ExtendWith(ApplicationExtension.class)
 public class TestViewerNetworking {
 	
+	private static ConfigurableApplicationContext serverContext;
+	
 	@Autowired
 	private Model model;
+	
 	BorderPane root;
 	ViewTransitionalModel vm;
 	Scene s;
 	Stage stage;
+	
+	@BeforeAll
+    public static void startTournamentServer() {
+        serverContext = new SpringApplicationBuilder(NetworkedTournamentServer.class)
+                .profiles("server")
+                // Force the port here to ensure it matches your test expectations
+                .properties("server.port=9090") 
+                .run();
+        
+        System.out.println("### TOURNAMENT SERVER STARTED ON PORT 9090 ###");
+    }
 	
 	@Start  //Before
 	private void start(Stage stage)
@@ -54,8 +75,16 @@ public class TestViewerNetworking {
 		this.stage = stage;
 		this.stage.setScene(s);
 		this.stage.show();
-	    
+		
 	}
+	
+	@AfterAll
+    public static void stopTournamentServer() {
+        if (serverContext != null) {
+            serverContext.close();
+            System.out.println("### TEST SERVER SHUT DOWN ###");
+        }
+    }
 
 	@Test
 	void testRemoteListener() {
@@ -90,7 +119,7 @@ public class TestViewerNetworking {
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		
-		ObservableList<String> tournaments = FXCollections.observableArrayList("TestTournament");
+		ObservableList<String> tournaments = FXCollections.observableArrayList("TestTournament", "AlmostFullTournament");
 		
 		ListView<String> openTournaments = getOpenTournaments(robot);
 		
@@ -102,19 +131,19 @@ public class TestViewerNetworking {
 			Assertions.assertThat(openTournaments).hasListCell(name);
 		}
 		
-		
-		
-		Button btn2 = robot.lookup("#spectateBtn").queryAs(Button.class);
-		robot.interact(() -> {
-			btn.requestFocus();
-			btn.fire();
-		});
+
 		
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		ListView<String> closedTournaments = getClosedTournaments(robot);
 		
 		closedTournaments.getSelectionModel().clearAndSelect(0);
+		
+		Button btn2 = robot.lookup("#spectateBtn").queryAs(Button.class);
+		robot.interact(() -> {
+			btn2.requestFocus();
+			btn2.fire();
+		});
 		
 		Assertions.assertThat(robot.lookup("#backBtn")).isNotNull();
 		

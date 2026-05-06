@@ -57,7 +57,7 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
 	public NetworkedTournamentClient() {
 		this.bot = new Cooperator("Jeff");
 		serverIP = "localhost"; // for testing
-		serverIP = "10.14.1.74";
+//		serverIP = "10.14.1.74";
 		serverPort = 9090;
 		restClient = RestClient.create();
 	}

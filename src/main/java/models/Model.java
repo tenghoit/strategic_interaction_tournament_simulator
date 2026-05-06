@@ -58,6 +58,10 @@ public class Model {
 	private ServletWebServerApplicationContext serverContext;
 	
 
+	public RestClient getRestClient() {
+		return restClient;
+	}
+
 	public Model() {
 		// TODO Auto-generated constructor stub
 		this.serverIP = new SimpleStringProperty("");
@@ -171,7 +175,7 @@ public class Model {
             
             try {
 				this.internalIP = InetAddress.getLocalHost().getHostAddress();
-//				this.internalIP = "localhost";
+				this.internalIP = "localhost";
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
