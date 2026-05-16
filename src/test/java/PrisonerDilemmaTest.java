@@ -87,44 +87,45 @@ class PrisonerDilemmaTest {
 	@Test
 	void testLoggers() {
 		History mockHistory = new History("Charles", "Bob", "COOPERATE", "COOPERATE", 3, 3);
+		
 		robin = new RoundRobin("PDRR", pd);
 		
-		robin.addListener(new MoveLogger("moves.txt"));
-		assertEquals(1, robin.getListeners().size());
+		ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
+		MoveLogger moveLogger = new MoveLogger("moves.txt");
 		
-        ScoreLogger scoreLogger = new ScoreLogger("scores.txt");
+		robin.addListener(moveLogger);
+		assertEquals(1, robin.getListeners().size());
+        
         robin.removeListener(scoreLogger);
         assertEquals(1, robin.getListeners().size());
         
+        robin.addListener(scoreLogger);
+        assertEquals(2, robin.getListeners().size());
+
         robin.addListener(scoreLogger);
         assertEquals(2, robin.getListeners().size());
         
         robin.removeListener(scoreLogger);
         assertEquals(1, robin.getListeners().size());
         
-        robin.notify(mockHistory);
+        robin.addListener(scoreLogger);
         
-		scoreLogger.update(mockHistory);
+        robin.notify(mockHistory);
+		
 		try {
 			List<String> scoreLines = Files.readAllLines(Paths.get("scores.txt"));
 	        assertEquals("Charles 3", scoreLines.get(0));
 	        assertEquals("Bob 3", scoreLines.get(1));
 	        
-	        String testFile = "test.txt";
-	        MoveLogger moveLogger = new MoveLogger(testFile);
-	        moveLogger.update(mockHistory);
-	        
-	        List<String> lines = Files.readAllLines(Paths.get(testFile));
-	        assertEquals("Charles COOPERATE", lines.get(0));
-	        assertEquals("Bob COOPERATE", lines.get(1));
+	        List<String> moveLines = Files.readAllLines(Paths.get("moves.txt"));
+	        assertEquals("Charles COOPERATE", moveLines.get(0));
+	        assertEquals("Bob COOPERATE", moveLines.get(1));
 	        
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		
-		
-		
-}
+		}
 		
 
         
@@ -138,6 +139,18 @@ class PrisonerDilemmaTest {
         assertEquals(0, match.result1());
         assertEquals(5, match.result2());
     }
+	
+	@Test
+	void testAddPlayers() {
+		robin = new RoundRobin("PDRR", pd);
+		Robot[] players = {alice, bob, charles, darren};
+        for(Robot bot : players) {  	
+        	assertEquals(true, robin.addPlayer(bot));
+        }
+        
+        Robot eli = new Cooperator("Eli");
+        assertEquals(false, robin.addPlayer(eli));
+	}
 	
 	@Test
     void testRRBracket() {

@@ -2,10 +2,8 @@ package networking.client;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext;
@@ -13,25 +11,23 @@ import org.springframework.boot.web.server.servlet.context.ServletWebServerIniti
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+import models.Action;
 import models.MatchDetails;
 import models.RegistrationRequest;
 import robots.Cooperator;
 import robots.Robot;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 
 @SpringBootApplication
 @RestController
@@ -99,18 +95,16 @@ public class NetworkedTournamentClient extends SpringBootServletInitializer {
         };
     }
 	
-	@RequestMapping("/action")
-	@ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("")
-	public String getAction(@RequestBody MatchDetails details) {
+	@PostMapping("/action")
+	@ResponseStatus(HttpStatus.OK)
+	public Action getAction(@RequestBody MatchDetails details) {
 		String result = this.bot.getAction(details.opponentName(), details.history());
 		System.out.println("Senting Response: " + result);
-		return result;
+		return new Action(result);
 	}
 	
-	@RequestMapping("/join/{tournamentName}")
+	@GetMapping("/join/{tournamentName}")
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("")
 	public Boolean join(@PathVariable String tournamentName) {
 		RegistrationRequest req = new RegistrationRequest(tournamentName, bot.getName(), assignedIP, assignedPort);
 		

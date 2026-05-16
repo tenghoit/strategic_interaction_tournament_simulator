@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 		webEnvironment = WebEnvironment.RANDOM_PORT,
 		classes = NetworkedTournamentClient.class
 )
+
 @AutoConfigureRestTestClient
 public class ClientTest {
 
@@ -34,55 +35,28 @@ public class ClientTest {
 	@Autowired
 	private RestTestClient tClient;
 	
-//	@Test
-//	void testRemoteBot() {
-//		Robot bot = new RemoteBot("Jeff", client.getAssignedIP(), client.getAssignedPort());
-//		assertEquals("COOPERATE", bot.getAction("", new ArrayList<History>()));
-//	}
-	
+
 	@Test
 	void testClient() {
 		MatchDetails details = new MatchDetails("", new ArrayList<History>());
 		
-		RemoteBot rb = new RemoteBot(client.getBot().getName(), client.getAssignedIP(), client.getAssignedPort());
-		
-		tClient.post().uri("/action")
-		.body(details)
-		.exchange()
-		.expectBody(String.class)
-		.isEqualTo("COOPERATE");
+//		RemoteBot rb = new RemoteBot("jeff", client.getAssignedIP(), client.getAssignedPort());
+		RemoteBot rb = new RemoteBot("jeff", "localhost", client.getAssignedPort()); // testing uses localhost
 		
 		assertEquals("COOPERATE", rb.getAction("", new ArrayList<History>()));
 		
-		
 		client.setBot(new Defector("Carl"));
-		
-		tClient.post().uri("/action")
-		.body(details)
-		.exchange()
-		.expectBody(String.class)
-		.isEqualTo("DEFECT");
+		assertEquals("DEFECT", rb.getAction("", new ArrayList<History>()));
 		
 		
 		ArrayList<History> history = new ArrayList<History>();
 		history.add(new History("Bob", "Charles", "DEFECT", "COOPERATE", 0, 5));
-		
 		client.setBot(new Reciprocator("Charles"));
 		
-		tClient.post().uri("/action")
-		.body(new MatchDetails("Bob", history))
-		.exchange()
-		.expectBody(String.class)
-		.isEqualTo("DEFECT");
+		assertEquals("DEFECT", rb.getAction("Bob", history));
 		
-		
-		history.add(new History("Bob", "Charles", "COOPERATE", "COOPERATE", 3, 3));
-		
-		tClient.post().uri("/action")
-		.body(new MatchDetails("Bob", history))
-		.exchange()
-		.expectBody(String.class)
-		.isEqualTo("COOPERATE");
+		history.add(new History("Bob", "Charles", "COOPERATE", "COOPERATE", 3, 3));		
+		assertEquals("COOPERATE", rb.getAction("Bob", history));
 		
 	}
 }

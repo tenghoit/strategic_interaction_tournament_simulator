@@ -20,8 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 		webEnvironment = WebEnvironment.RANDOM_PORT,
 		classes = NetworkedTournamentServer.class
 )
-@AutoConfigureRestTestClient
 
+@AutoConfigureRestTestClient
 public class ServerTest {
 
 	@Autowired

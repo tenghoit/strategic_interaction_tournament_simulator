@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List; // Use the interface
 import org.springframework.web.client.RestClient;
 import org.springframework.http.MediaType;
+
+import models.Action;
 import models.History;
 import models.MatchDetails;
 
@@ -29,20 +31,20 @@ public class RemoteBot extends Robot {
         System.out.println("RemoteBot: Requesting action from " + uri);
 
         try {
-            String result = this.client.post()
+        	Action action = this.client.post()
                     .uri(uri)
                     .contentType(MediaType.APPLICATION_JSON) // CRITICAL: Tell the client this is JSON
                     .body(details)
                     .retrieve()
-                    .body(String.class);
+                    .body(Action.class);
             
-            System.out.println("RemoteBot: Received action: " + result);
-            
-            return result;
+            System.out.println("RemoteBot: Received action: " + action.action());
+            return action.action();
             
             
         } catch (Exception e) {
             System.err.println("RemoteBot: failed to get action from " + uri);
+            e.printStackTrace();
             return "ERROR"; // Or a default move like "COOPERATE"
         }
     }
